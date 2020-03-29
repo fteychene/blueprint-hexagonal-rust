@@ -1,6 +1,9 @@
 /target
 **/*.rs.bk
 
+#Development
+test.db
+
 # IntelliJ
 .idea
 *.iml

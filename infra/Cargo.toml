@@ -11,3 +11,4 @@ blueprint-hexagonal-domain = { version = "0.1", path = "../domain"}
 im = "14.3"
 anyhow = "1.0"
 uuid = {version = "0.8", features = ["v4"] }
+diesel = { version = "1.4", features = ["sqlite", "r2d2"] }

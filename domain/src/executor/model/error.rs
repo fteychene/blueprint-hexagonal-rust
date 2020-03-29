@@ -8,5 +8,9 @@ pub enum TaskError {
     ExecutionError {
         #[from]
         source: anyhow::Error
+    },
+    #[error("Unexpected error while processing the command")]
+    UnexpectedError {
+        source: anyhow::Error
     }
 }

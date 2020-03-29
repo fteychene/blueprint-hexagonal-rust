@@ -1,0 +1,8 @@
+CREATE TABLE tasks (
+  id VARCHAR NOT NULL PRIMARY KEY,
+  name VARCHAR,
+  command VARCHAR NOT NULL,
+  env VARCHAR,
+  status VARCHAR NOT NULL,
+  status_log VARCHAR
+)

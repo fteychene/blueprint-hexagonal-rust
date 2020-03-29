@@ -5,9 +5,15 @@
 
 This project is a tiny task scheduler, you can create some tasks that will be run and get their status.
 
+### Configuration
+
+To initialize database please install [`cargo install diesel_cli`](https://github.com/diesel-rs/diesel/tree/master/diesel_cli#installation).
+
+Run the migrations at root of the project: `diesel migration run`
+
 ### Execute
 
-`cargo run`
+`DATABASE_URL=test.db cargo run`
 
 ## Hexagonal architecture
 
