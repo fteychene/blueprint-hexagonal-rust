@@ -1,10 +1,16 @@
-use crate::executor::model::model::{Task, TaskStatus, TaskId};
 use anyhow::Error;
+use im::HashMap;
 
-pub trait TaskExecutorPort {
-    fn schedule_task(input_task: T) -> Result<TaskId, Error>
-        where T: Into<Task>;
+use crate::executor::model::model::{TaskId, TaskStatus};
 
-    fn task_status(id: T) -> Result<TaskStatus, Error>
-        where T: Into<TaskId>;
+pub trait TaskSchedulerPort {
+    fn schedule_task(&mut self, input_task: TaskInput) -> Result<TaskId, Error>;
+
+    fn task_status(&mut self, id: TaskId) -> Result<TaskStatus, Error>;
+}
+
+pub struct TaskInput {
+    pub name: Option<String>,
+    pub command: String,
+    pub env: Option<HashMap<String, String>>,
 }
