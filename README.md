@@ -23,3 +23,5 @@ I know it i not perfect and it could be improved (and it will be) but tere is al
  - [ ] Add unit tests
  - [ ] Add real life adapter
  - [ ] Improve error management
+ - [ ] Improve documentation
+ - [ ] Split task execution
