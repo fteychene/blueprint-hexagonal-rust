@@ -1,7 +1,5 @@
 use im::HashMap;
 
-use crate::executor::model::error::TaskError;
-
 #[derive(Clone, Debug)]
 pub struct Task {
     pub id: String,

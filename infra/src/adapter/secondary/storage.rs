@@ -4,7 +4,6 @@ use im::Vector;
 
 use domain::executor::model::model::{Task, TaskId, TaskStatus};
 use domain::executor::ports::secondary::TaskStoragePort;
-use std::borrow::BorrowMut;
 use anyhow::anyhow;
 
 #[derive(Clone)]
