@@ -20,6 +20,7 @@ I know it i not perfect and it could be improved (and it will be) but tere is al
 ### TODO
 
  - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [notes](Notes.md#))
+ - [ ] Add input validation
  - [ ] Add unit tests
  - [ ] Add real life adapter
  - [ ] Improve error management
