@@ -1,14 +1,16 @@
 extern crate blueprint_hexagonal_domain as domain;
 
 mod adapter;
+mod cli;
 
 use adapter::secondary::storage::TaskStorageAdapter;
 use adapter::secondary::execution::TaskExecutionAdapter;
 use adapter::secondary::id_generator::IdGeneratorAdapter;
-use domain::executor::ports::primary::{TaskSchedulerPort, TaskInput};
+use domain::executor::ports::primary::TaskSchedulerPort;
 use domain::executor::service::task_execution::TaskScheduler;
 use anyhow::Error;
 use std::borrow::{BorrowMut, Borrow};
+use cli::parse_cli_opts;
 
 fn main() -> Result<(), Error> {
     let mut storage = TaskStorageAdapter::new();
@@ -23,16 +25,9 @@ fn main() -> Result<(), Error> {
 }
 
 fn run(mut port: impl TaskSchedulerPort) -> Result<(), Error> {
-    port.schedule_task(create_task("ls", None))
+    parse_cli_opts()
+        .and_then(|input| port.schedule_task(input))
         .and_then(|task_id| port.task_status(task_id))
         .map(|status| println!("Task status is {:?}", status))
         .map(|_| ())
-}
-
-fn create_task(command: &str, name: Option<String>) -> TaskInput {
-    TaskInput {
-        name: name,
-        command: command.to_string(),
-        env: None,
-    }
 }

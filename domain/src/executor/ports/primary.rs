@@ -4,9 +4,11 @@ use im::HashMap;
 use crate::executor::model::model::{TaskId, TaskStatus};
 
 pub trait TaskSchedulerPort {
-    fn schedule_task(&mut self, input_task: TaskInput) -> Result<TaskId, Error>;
+    fn schedule_task<T>(&mut self, input_task: T) -> Result<TaskId, Error>
+        where T: Into<TaskInput>;
 
-    fn task_status(&mut self, id: TaskId) -> Result<TaskStatus, Error>;
+    fn task_status<T>(&mut self, id: T) -> Result<TaskStatus, Error>
+        where T: Into<TaskId> ;
 }
 
 pub struct TaskInput {

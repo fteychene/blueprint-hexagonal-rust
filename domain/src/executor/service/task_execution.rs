@@ -11,14 +11,16 @@ pub struct TaskScheduler<'a> {
 
 
 impl TaskSchedulerPort for TaskScheduler<'_> {
-    fn schedule_task(&mut self, input_task: TaskInput) -> Result<TaskId, Error> {
+    fn schedule_task<T>(&mut self, input_task: T) -> Result<TaskId, Error>
+        where T: Into<TaskInput> {
         self.storage.save(task(input_task.into(), self.id_generator.generate_id()))
             // No rule logic for the moment, execute after
             .and_then(|into_task| execute_task(into_task.into(), self.execution, self.storage))
     }
 
-    fn task_status(&mut self, id: TaskId) -> Result<TaskStatus, Error> {
-        self.storage.status(id)
+    fn task_status<T>(&mut self, id: T) -> Result<TaskStatus, Error>
+        where T: Into<TaskId> {
+        self.storage.status(id.into())
     }
 }
 

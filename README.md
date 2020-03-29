@@ -19,9 +19,14 @@ I know it i not perfect and it could be improved (and it will be) but tere is al
 
 ### TODO
 
- - [ ] Improve genericity for the domain using `Into` and `From`
+ - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [notes](Notes.md#))
  - [ ] Add unit tests
  - [ ] Add real life adapter
  - [ ] Improve error management
  - [ ] Improve documentation
  - [ ] Split task execution
+ 
+ #### [Notes](Notes.md#)
+ 
+ See notes describing choices and limitations during the development process.  
+ If something could be done, please raise an issue with comment to explain what I did get wrong.
