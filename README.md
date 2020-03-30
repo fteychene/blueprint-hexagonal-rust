@@ -5,6 +5,8 @@
 
 This project is a tiny task scheduler, you can create some tasks that will be run and get their status.
 
+## Setup
+
 ### Configuration
 
 To initialize database please install [`cargo install diesel_cli`](https://github.com/diesel-rs/diesel/tree/master/diesel_cli#installation).
@@ -15,23 +17,31 @@ Run the migrations at root of the project: `diesel migration run`
 
 `DATABASE_URL=test.db cargo run`
 
+### Database connection
+
+`sqlite3 test.db`
+
 ## Hexagonal architecture
 
 Domain & Infra code are split in two projects.  
-I know it i not perfect and it could be improved (and it will be) but tere is all the basics of hexagonal architecture from my point of view :
+I know it is not perfect and it could be improved (and it will be) but there is all the basics of hexagonal architecture from my point of view :
  - Separation of domain and infrastructure code
  - Portable domain
- - Composition in infra code to execute as wanted
+ - Composition in infra code to execute as wanted 
+ 
+Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter` or with sqlitedb using `adapter::secondary::database::TaskDatabaseStorageAdapter`
 
 ### TODO
 
  - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [notes](Notes.md#))
  - [ ] Add input validation
  - [ ] Add unit tests
- - [ ] Add real life adapter
+ - [x] Add real life adapter
+ - [ ] CLI Adapter for input
  - [ ] Improve error management
  - [ ] Improve documentation
  - [ ] Split task execution
+ - [ ] Run migration through code for database
  
  #### [Notes](Notes.md#)
  

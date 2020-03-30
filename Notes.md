@@ -3,8 +3,8 @@
 ### Into for secondary ports
 
 __Goal__ :
-Main goal was to provide a way for Adapter to not adapt their internal domains to application domain as function result.  
-To provide this feature we would like to provider functions of secondary ports to return types with only `Into<DomainStruct>` constraint.
+Main goal was to provide a way for adapters to not adapt their internal domains to application domain as function result.  
+To provide this feature we would like to provide functions of secondary ports to return types with only `Into<DomainStruct>` constraint.
 
 __Issue__ :
 ```
