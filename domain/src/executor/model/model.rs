@@ -1,6 +1,6 @@
 use im::HashMap;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Task {
     pub id: String,
     pub name: Option<String>,
