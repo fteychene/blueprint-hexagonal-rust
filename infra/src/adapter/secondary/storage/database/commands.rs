@@ -1,47 +1,15 @@
 use super::schema::tasks;
-use domain::executor::model::model::{Task, TaskId, TaskStatus};
 use diesel::{SqliteConnection, Connection, RunQueryDsl};
 use anyhow::{anyhow, Error};
-use domain::executor::ports::secondary::TaskStoragePort;
+use domain::executor::model::model::{Task, TaskId, TaskStatus};
 use std::convert::TryInto;
 use crate::diesel::*;
 use im::HashMap;
 
-const SCHEDULED: &str = "SCHEDULED";
-const SUCCESS: &str = "SUCCESS";
-const ERROR: &str = "ERROR";
 
-pub struct TaskDatabaseStorageAdapter {
-    connection: SqliteConnection
-}
-
-impl TaskStoragePort for TaskDatabaseStorageAdapter {
-    fn save(&mut self, task: Task) -> Result<Task, Error> {
-        create_task(&self.connection, &task)
-            .map(|_| task)
-    }
-
-    fn status(&mut self, id: TaskId) -> Result<TaskStatus, Error> {
-        get_task(&self.connection, &id)
-    }
-
-    fn complete(&mut self, task: &Task, status: TaskStatus) -> Result<(), Error> {
-        match status {
-            TaskStatus::Scheduled => update_task(&self.connection, task.id.as_str(), SCHEDULED, None),
-            TaskStatus::Success(stdout) => update_task(&self.connection, task.id.as_str(), SUCCESS, Some(stdout.as_str())),
-            TaskStatus::Error(stderr) => update_task(&self.connection, task.id.as_str(), ERROR, Some(stderr.as_str())),
-        }
-    }
-}
-
-impl TaskDatabaseStorageAdapter {
-    pub fn new(database_url: &str) -> Result<TaskDatabaseStorageAdapter, Error> {
-        let database_connection = establish_connection(database_url)?;
-        Ok(TaskDatabaseStorageAdapter {
-            connection: database_connection
-        })
-    }
-}
+pub const SCHEDULED: &str = "SCHEDULED";
+pub const SUCCESS: &str = "SUCCESS";
+pub const ERROR: &str = "ERROR";
 
 #[derive(Queryable, Insertable)]
 #[table_name = "tasks"]
@@ -59,7 +27,7 @@ pub fn establish_connection(database_url: &str) -> Result<SqliteConnection, Erro
         .map_err(|err| anyhow!("Error connecting to database {}", err))
 }
 
-fn create_task(conn: &SqliteConnection, new_task: &Task) -> Result<usize, Error> {
+pub fn create_task(conn: &SqliteConnection, new_task: &Task) -> Result<usize, Error> {
     let insertable_task: DbTask = (new_task, &TaskStatus::Scheduled).into();
     diesel::insert_into(tasks::table)
         .values(&insertable_task)
@@ -67,7 +35,7 @@ fn create_task(conn: &SqliteConnection, new_task: &Task) -> Result<usize, Error>
         .map_err(|err| anyhow!("Error inserting in db : {:?}", err))
 }
 
-fn get_task(conn: &SqliteConnection, task_id: &TaskId) -> Result<TaskStatus, Error> {
+pub fn get_task(conn: &SqliteConnection, task_id: &TaskId) -> Result<TaskStatus, Error> {
     use super::schema::tasks::dsl::*;
     let (_, status_value) = match task_id {
         TaskId::Id(id_value) => tasks.filter(id.eq(id_value))
@@ -89,7 +57,7 @@ struct TaskStatusUpdate<'a> {
     status_log: Option<&'a str>,
 }
 
-fn update_task(conn: &SqliteConnection, id_value: &str, status: &str, status_log: Option<&str>) -> Result<(), Error> {
+pub fn update_task(conn: &SqliteConnection, id_value: &str, status: &str, status_log: Option<&str>) -> Result<(), Error> {
     use super::schema::tasks::dsl as tasks_dsl;
     diesel::update(tasks_dsl::tasks.find(id_value))
         .set(&TaskStatusUpdate { status, status_log })

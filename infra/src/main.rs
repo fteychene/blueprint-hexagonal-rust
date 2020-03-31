@@ -5,7 +5,6 @@ mod adapter;
 mod cli;
 
 use adapter::secondary::storage::database::TaskDatabaseStorageAdapter;
-// use adapter::secondary::storage::TaskStorageAdapter;
 use adapter::secondary::execution::TaskExecutionAdapter;
 use adapter::secondary::id_generator::IdGeneratorAdapter;
 use domain::executor::ports::primary::TaskSchedulerPort;
