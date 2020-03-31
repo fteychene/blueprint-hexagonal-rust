@@ -13,9 +13,29 @@ To initialize database please install [`cargo install diesel_cli`](https://githu
 
 Run the migrations at root of the project: `diesel migration run`
 
+### Build
+
+Use cargo for build : `cargo build`
+
 ### Execute
 
-`DATABASE_URL=test.db cargo run`
+```
+tasc 0.1.0
+
+USAGE:
+    blueprint-hexagonal-infra [OPTIONS] [command]...
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -n, --name <name>    Optional : Name of the task for later querying
+
+ARGS:
+    <command>...    Command to be executed by the task
+
+```
 
 ### Database connection
 
@@ -36,7 +56,7 @@ Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter`
  - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [notes](Notes.md#))
  - [x] Add unit tests
  - [x] Add real life adapter
- - [ ] CLI Adapter for input
+ - [x] CLI Adapter for input
  - [ ] Improve error management
  - [ ] Add input validation
  - [ ] Improve documentation
