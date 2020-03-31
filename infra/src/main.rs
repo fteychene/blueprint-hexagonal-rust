@@ -4,8 +4,8 @@ extern crate blueprint_hexagonal_domain as domain;
 mod adapter;
 mod cli;
 
-use adapter::secondary::database::TaskDatabaseStorageAdapter;
-use adapter::secondary::storage::TaskStorageAdapter;
+use adapter::secondary::storage::database::TaskDatabaseStorageAdapter;
+// use adapter::secondary::storage::TaskStorageAdapter;
 use adapter::secondary::execution::TaskExecutionAdapter;
 use adapter::secondary::id_generator::IdGeneratorAdapter;
 use domain::executor::ports::primary::TaskSchedulerPort;
@@ -13,9 +13,13 @@ use domain::executor::service::task_execution::TaskScheduler;
 use anyhow::Error;
 use std::borrow::{BorrowMut, Borrow};
 use cli::parse_cli_opts;
+use std::env;
 
 fn main() -> Result<(), Error> {
-    let mut storage = TaskDatabaseStorageAdapter::new();
+    //TODO Load configuration in a proper way
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
+    let mut storage = TaskDatabaseStorageAdapter::new(&database_url)?;
     let execution = TaskExecutionAdapter::new();
     let id_generator = IdGeneratorAdapter::new();
     let service = TaskScheduler::new(
