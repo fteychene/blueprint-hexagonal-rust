@@ -15,7 +15,7 @@ pub enum TaskStatus {
     Error(String),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum TaskId {
     Id(String),
     Name(String)

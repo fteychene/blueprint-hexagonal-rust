@@ -34,11 +34,11 @@ Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter`
 ### TODO
 
  - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [notes](Notes.md#))
- - [ ] Add input validation
- - [ ] Add unit tests
+ - [x] Add unit tests
  - [x] Add real life adapter
  - [ ] CLI Adapter for input
  - [ ] Improve error management
+ - [ ] Add input validation
  - [ ] Improve documentation
  - [ ] Split task execution
  - [ ] Run migration through code for database
