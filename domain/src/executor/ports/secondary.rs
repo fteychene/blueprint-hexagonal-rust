@@ -19,6 +19,7 @@ pub trait TaskExecutionPort {
     fn execute(&self, task: &Task) -> Result<TaskStatus, TaskError>;
 }
 
+#[automock]
 pub trait IdGeneratorPort {
     fn generate_id(&self) -> String;
 }

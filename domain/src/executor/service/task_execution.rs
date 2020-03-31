@@ -62,9 +62,8 @@ fn execute_task(task: Task, executor: &dyn TaskExecutionPort, storage: &mut dyn 
 mod tests {
     use super::*;
     use crate::executor::model::error::TaskError;
-    use mockall::predicate::*;
     use mockall::*;
-    use crate::executor::ports::secondary::{MockTaskExecutionPort, MockTaskStoragePort };
+    use crate::executor::ports::secondary::{MockTaskExecutionPort, MockTaskStoragePort, MockIdGeneratorPort};
 
     // TODO add storage of commands to check num of interaction on tests impls
     #[test]
@@ -150,5 +149,35 @@ mod tests {
             env: None,
         };
         assert_eq!(format!("{}", execute_task(input_task, &execution_mock, &mut storage_mock).unwrap_err()), "Storage failed");
+    }
+
+    #[test]
+    fn test_task_scheduler_schedule_task_should_execute_just_after() {
+        let mut execution_mock = MockTaskExecutionPort::new();
+        execution_mock.expect_execute()
+            .times(1)
+            .returning(|_| Ok(TaskStatus::Success("Coucou".to_string())));
+
+        let mut storage_mock = MockTaskStoragePort::new();
+        storage_mock.expect_save()
+            .times(1)
+            .returning(|x| Ok(x));
+        storage_mock.expect_complete()
+            .times(1)
+            .returning(|_, _| Ok(()));
+
+        let mut id_mock = MockIdGeneratorPort::new();
+        id_mock.expect_generate_id()
+            .times(1)
+            .returning(|| "test_id".to_string());
+
+        let mut service = TaskScheduler::new(&mut storage_mock, &execution_mock, &id_mock);
+
+        let input_task = TaskInput {
+            name: None,
+            command: "ls /home".to_string(),
+            env: None
+        };
+        assert_eq!(service.schedule_task(input_task).unwrap(), TaskId::Id("test_id".to_string()));
     }
 }
