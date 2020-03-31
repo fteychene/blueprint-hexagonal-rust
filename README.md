@@ -49,7 +49,7 @@ I know it is not perfect and it could be improved (and it will be) but there is 
  - Portable domain
  - Composition in infra code to execute as wanted 
  
-Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter` or with sqlitedb using `adapter::secondary::database::TaskDatabaseStorageAdapter`
+Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter` or with sqlitedb using `adapter::secondary::storage::database::TaskDatabaseStorageAdapter`
 
 ### TODO
 
