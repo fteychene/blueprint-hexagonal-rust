@@ -1,16 +1,16 @@
 use domain::executor::ports::secondary::IdGeneratorPort;
 use uuid::Uuid;
 
-pub struct IdGeneratorAdapter;
+pub struct UUIDGeneratorAdapter;
 
-impl IdGeneratorPort for IdGeneratorAdapter {
+impl IdGeneratorPort for UUIDGeneratorAdapter {
     fn generate_id(&self) -> String {
         Uuid::new_v4().to_string()
     }
 }
 
-impl IdGeneratorAdapter {
-    pub fn new() -> IdGeneratorAdapter {
-        IdGeneratorAdapter{}
+impl UUIDGeneratorAdapter {
+    pub fn new() -> UUIDGeneratorAdapter {
+        UUIDGeneratorAdapter {}
     }
 }

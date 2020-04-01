@@ -22,25 +22,27 @@ I know it is not perfect and it could be improved (and it will be) but there is 
 ![domain schema](doc/domain_schema.png) 
 
 _Ports_ :  
-- __TaskSchedulePort__ : Contract to schedule some Task and get their status
-- __TaskStoragePort__ : Contract to store tasks and their executions
-- __TaskExecutionPort__ : Contract for task execution
-- __IdGeneratorPort__ : Contract to generate ids for tasks
+- __TaskSchedulePort (_executor::ports::primary::TaskSchedulerPort_)__ : Contract to schedule some Task and get their status
+- __TaskStoragePort (_executor::ports::secondary::TaskStoragePort_)__ : Contract to store tasks and their executions
+- __TaskExecutionPort (_executor::ports::secondary::TaskExecutionPort_)__ : Contract for task execution
+- __IdGeneratorPort (_executor::ports::secondary::IdGeneratorPort_)__ : Contract to generate ids for tasks
 
 
 ### Infra
 ![infra schema](doc/infra_schema.png) 
 
 _Adapters_ :  
-- __CLI Input (_TaskCliInput_)__ : Input of the application via command line
-- __UUID IdGenerator (_IdGeneratorAdapter_)__ : Ig generator based on UUID
-- __Local ExecutionAdapter (_TaskExecutionAdapter_)__ : Task execution adapter on local machine
-- __Database StorageAdapter (_TaskDatabaseStorageAdapter_)__ : Database storage
-- __InMemory StorageAdapter (_TaskStorageAdapter_)__ : InMemory storage
+- __CLI Input (_cli::CliOpt_)__ : Input of the application via command line
+- __UUID IdGenerator (_adapter::secondary::id_generator::UUIDGeneratorAdapter_)__ : Ig generator based on UUID
+- __Local ExecutionAdapter (_adapter::secondary::execution::LocalExecutionAdapter_)__ : Task execution adapter on local machine
+- __Database StorageAdapter (_adapter::secondary::storage::database::SqliteStorageAdapter_)__ : Database storage
+- __InMemory StorageAdapter (_adapter::secondary::storage::memory::InMemoryStorageAdapter_)__ : InMemory storage
 
 ### Composability
 
-Storage can be in memory using `adapter::secondary::storage::TaskStorageAdapter` or with sqlitedb using `adapter::secondary::storage::database::TaskDatabaseStorageAdapter`
+Storage can be in memory using `adapter::secondary::storage::memory::InMemoryStorageAdapter` or with sqlitedb using `adapter::secondary::storage::database::SqliteStorageAdapter`.
+This behavior is configured by the `new_storage_adapter` in `adapter::storage` module.  
+Currently, the choice is hard coded but it could be configurable.
 
 ## Setup
 
@@ -109,7 +111,7 @@ linuxbrew
  - [x] CLI Adapter for input
  - [ ] Improve error management
  - [ ] Add input validation
- - [ ] Improve documentation
+ - [x] Improve documentation
  - [ ] Split task execution
  - [ ] Run migration through code for database
  

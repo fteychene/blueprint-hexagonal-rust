@@ -15,11 +15,11 @@ struct StoredTask {
     status: TaskStatus,
 }
 
-pub struct TaskStorageAdapter {
+pub struct InMemoryStorageAdapter {
     tasks: Vector<StoredTask>
 }
 
-impl TaskStoragePort for TaskStorageAdapter {
+impl TaskStoragePort for InMemoryStorageAdapter {
     fn save(&mut self, task: Task) -> Result<Task, Error> {
         self.tasks.push_back(StoredTask::from(&task));
         Ok(task)
@@ -44,9 +44,9 @@ impl TaskStoragePort for TaskStorageAdapter {
     }
 }
 
-impl TaskStorageAdapter {
-    pub fn new() -> TaskStorageAdapter {
-        TaskStorageAdapter {
+impl InMemoryStorageAdapter {
+    pub fn new() -> InMemoryStorageAdapter {
+        InMemoryStorageAdapter {
             tasks: Vector::new()
         }
     }

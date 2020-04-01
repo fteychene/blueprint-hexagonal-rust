@@ -6,23 +6,23 @@ use anyhow::anyhow;
 use im::Vector;
 use std::iter::FromIterator;
 
-pub struct TaskExecutionAdapter {}
+pub struct LocalExecutionAdapter {}
 
-impl TaskExecutionPort for TaskExecutionAdapter {
+impl TaskExecutionPort for LocalExecutionAdapter {
     fn execute(&self, task: &Task) -> Result<TaskStatus, TaskError> {
-        let command_splited = Vector::from_iter(task.command.split_whitespace().into_iter());
-        let main_command: &str = command_splited.head().ok_or(TaskError::ExecutionError { source: anyhow!("Command can't be empty") })?;
+        let command_splitted = Vector::from_iter(task.command.split_whitespace().into_iter());
+        let main_command: &str = command_splitted.head().ok_or(TaskError::ExecutionError { source: anyhow!("Command can't be empty") })?;
         Command::new(main_command)
-            .args(command_splited.split_at(1).1)
+            .args(command_splitted.split_at(1).1)
             .output()
             .map_err(|err| TaskError::ExecutionError { source: anyhow!("{:?}", err) })
             .and_then(validate_output)
     }
 }
 
-impl TaskExecutionAdapter {
-    pub fn new() -> TaskExecutionAdapter {
-        TaskExecutionAdapter {}
+impl LocalExecutionAdapter {
+    pub fn new() -> LocalExecutionAdapter {
+        LocalExecutionAdapter {}
     }
 }
 

@@ -6,11 +6,11 @@ use domain::executor::ports::secondary::TaskStoragePort;
 mod schema;
 mod commands;
 
-pub struct TaskDatabaseStorageAdapter {
+pub struct SqliteStorageAdapter {
     connection: SqliteConnection
 }
 
-impl TaskStoragePort for TaskDatabaseStorageAdapter {
+impl TaskStoragePort for SqliteStorageAdapter {
     fn save(&mut self, task: Task) -> Result<Task, Error> {
         commands::create_task(&self.connection, &task)
             .map(|_| task)
@@ -29,10 +29,10 @@ impl TaskStoragePort for TaskDatabaseStorageAdapter {
     }
 }
 
-impl TaskDatabaseStorageAdapter {
-    pub fn new(database_url: &str) -> Result<TaskDatabaseStorageAdapter, Error> {
+impl SqliteStorageAdapter {
+    pub fn new(database_url: &str) -> Result<SqliteStorageAdapter, Error> {
         let database_connection = commands::establish_connection(database_url)?;
-        Ok(TaskDatabaseStorageAdapter {
+        Ok(SqliteStorageAdapter {
             connection: database_connection
         })
     }
