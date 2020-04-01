@@ -3,27 +3,27 @@ extern crate blueprint_hexagonal_domain as domain;
 #[macro_use] extern crate diesel_migrations;
 
 use std::borrow::Borrow;
-use std::env;
 
 use anyhow::Error;
 use itertools::Itertools;
 
-use crate::secondary::adapter::execution::LocalExecutionAdapter;
-use crate::secondary::adapter::id_generator::UUIDGeneratorAdapter;
-use crate::secondary::adapter::storage::{new_storage_adapter, StorageType};
-use crate::primary::cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
 use domain::executor::model::model::{TaskId, TaskStatus};
 use domain::executor::ports::primary::TaskSchedulerPort;
 use domain::executor::service::task_execution::TaskScheduler;
+
+use crate::primary::cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
+use crate::secondary::adapter::execution::LocalExecutionAdapter;
+use crate::secondary::adapter::id_generator::UUIDGeneratorAdapter;
+use crate::secondary::adapter::storage::{new_storage_adapter};
+
 
 mod secondary;
 mod primary;
 
 fn main() -> Result<(), Error> {
-    //TODO Load configuration in a proper way
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let configuration = primary::settings::load_settings()?;
 
-    let mut storage = new_storage_adapter(StorageType::Database { database_url: &database_url })?;
+    let mut storage = new_storage_adapter(configuration.storage)?;
     let execution = LocalExecutionAdapter::new();
     let id_generator = UUIDGeneratorAdapter::new();
     let service = TaskScheduler::new(

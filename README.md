@@ -46,17 +46,23 @@ Currently, the choice is hard coded but it could be configurable.
 
 ## Setup
 
-### Configuration
+### Database init (Optional)
 
-Application need env var `DATABASE_URL` with database usage (example `export DATABASE_URL=test.db`). This configruation is needed for migration, and run of the project.
+Application roll automatically database migration but you can manualy do the needed migrations.
 
-To initialize database please install [`cargo install diesel_cli`](https://github.com/diesel-rs/diesel/tree/master/diesel_cli#installation).
+To initialize database please install [`cargo install diesel_cli for sqlite`](https://github.com/diesel-rs/diesel/tree/master/diesel_cli#installation).
 
-Run the migrations at root of the project: `diesel migration run`
+Run the migrations at root of the project: `diesel migration run --database-url <database_path>`
 
 ### Build
 
 Use cargo for build : `cargo build`
+
+### Configuration
+
+The configuration of the application is loaded from [settings.toml](settings.toml) file.
+
+You can override configuration by env var (example `export DATABASE_URL=override.db` override `database.url` settings)
 
 ### Execute
 

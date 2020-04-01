@@ -1,0 +1,4 @@
+storage = "database" # "inmemory"
+
+[database]
+url = "test.db"
