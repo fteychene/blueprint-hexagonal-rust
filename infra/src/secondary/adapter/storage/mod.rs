@@ -2,8 +2,8 @@ use anyhow::Error;
 
 use domain::executor::ports::secondary::TaskStoragePort;
 
-use crate::adapter::secondary::storage::database::SqliteStorageAdapter;
-use crate::adapter::secondary::storage::memory::InMemoryStorageAdapter;
+use crate::secondary::adapter::storage::database::SqliteStorageAdapter;
+use crate::secondary::adapter::storage::memory::InMemoryStorageAdapter;
 
 pub mod database;
 pub mod memory;

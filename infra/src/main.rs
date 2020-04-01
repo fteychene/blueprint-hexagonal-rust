@@ -8,16 +8,16 @@ use std::env;
 use anyhow::Error;
 use itertools::Itertools;
 
-use adapter::secondary::execution::LocalExecutionAdapter;
-use adapter::secondary::id_generator::UUIDGeneratorAdapter;
-use adapter::secondary::storage::{new_storage_adapter, StorageType};
-use cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
+use crate::secondary::adapter::execution::LocalExecutionAdapter;
+use crate::secondary::adapter::id_generator::UUIDGeneratorAdapter;
+use crate::secondary::adapter::storage::{new_storage_adapter, StorageType};
+use crate::primary::cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
 use domain::executor::model::model::{TaskId, TaskStatus};
 use domain::executor::ports::primary::TaskSchedulerPort;
 use domain::executor::service::task_execution::TaskScheduler;
 
-mod adapter;
-mod cli;
+mod secondary;
+mod primary;
 
 fn main() -> Result<(), Error> {
     //TODO Load configuration in a proper way

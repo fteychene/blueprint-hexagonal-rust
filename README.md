@@ -16,7 +16,7 @@ I know it is not perfect and it could be improved (and it will be) but there is 
  - Portable domain
  - Testable domain
  - Composition in infra code to execute as wanted
- - Each adapter have a proper model for its purpose
+ - Each secondary.adapter have a proper model for its purpose
 
 ### Domain
 ![domain schema](doc/domain_schema.png) 
@@ -32,16 +32,16 @@ _Ports_ :
 ![infra schema](doc/infra_schema.png) 
 
 _Adapters_ :  
-- __CLI Input (_cli::CliOpt_)__ : Input of the application via command line
-- __UUID IdGenerator (_adapter::secondary::id_generator::UUIDGeneratorAdapter_)__ : Ig generator based on UUID
-- __Local ExecutionAdapter (_adapter::secondary::execution::LocalExecutionAdapter_)__ : Task execution adapter on local machine
-- __Database StorageAdapter (_adapter::secondary::storage::database::SqliteStorageAdapter_)__ : Database storage
-- __InMemory StorageAdapter (_adapter::secondary::storage::memory::InMemoryStorageAdapter_)__ : InMemory storage
+- __CLI Input (_primary::cli::CliOpt_)__ : Input of the application via command line
+- __UUID IdGenerator (_secondary::adapter::id_generator::UUIDGeneratorAdapter_)__ : Ig generator based on UUID
+- __Local ExecutionAdapter (_secondary::adapter::execution::LocalExecutionAdapter_)__ : Task execution secondary.adapter on local machine
+- __Database StorageAdapter (_secondary::adapter::storage::database::SqliteStorageAdapter_)__ : Database storage
+- __InMemory StorageAdapter (_secondary::adapter::storage::memory::InMemoryStorageAdapter_)__ : InMemory storage
 
 ### Composability
 
-Storage can be in memory using `adapter::secondary::storage::memory::InMemoryStorageAdapter` or with sqlitedb using `adapter::secondary::storage::database::SqliteStorageAdapter`.
-This behavior is configured by the `new_storage_adapter` in `adapter::storage` module.  
+Storage can be in memory using `secondary::adapter::storage::memory::InMemoryStorageAdapter` or with sqlitedb using `secondary::adapter::storage::database::SqliteStorageAdapter`.
+This behavior is configured by the `new_storage_adapter` in `secondary::adapter::storage` module.  
 Currently, the choice is hard coded but it could be configurable.
 
 ## Setup
@@ -106,7 +106,7 @@ linuxbrew
 
  - [x] Improve genericity for the domain using `Into` and `From` (limitation on secondary ports see [#limitations](#into-for-secondary-ports))
  - [x] Add unit tests
- - [x] Add real life adapter
+ - [x] Add real life secondary.adapter
  - [x] CLI Adapter for input
  - [ ] Improve error management
  - [ ] Add input validation
