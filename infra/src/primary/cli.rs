@@ -2,14 +2,17 @@ use domain::executor::ports::primary::TaskInput;
 use domain::executor::model::model::TaskId;
 use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
+#[derive(StructOpt, Debug, Clone)]
 pub struct TaskRunOpt {
     /// Command to be executed by the task
     #[structopt(required = true)]
     command: Vec<String>,
-    /// Optional : Name of the task for later querying
+    /// Name of the task for later querying
     #[structopt(short, long)]
     name: Option<String>,
+    /// Wait the execution of the task and print status
+    #[structopt(short, long)]
+    pub wait: bool,
 }
 
 #[derive(Debug, StructOpt)]

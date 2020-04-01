@@ -77,13 +77,17 @@ __Run a task__ :
 blueprint-hexagonal-infra-run 0.1.0
 
 USAGE:
-    blueprint-hexagonal-infra run [OPTIONS] <command>...
+    blueprint-hexagonal-infra run [FLAGS] [OPTIONS] <command>...
+
+FLAGS:
+    -w, --wait       Wait the execution of the task and print status
 
 OPTIONS:
-    -n, --name <name>    Optional : Name of the task for later querying
+    -n, --name <name>    Name of the task for later querying
 
 ARGS:
     <command>...    Command to be executed by the task
+
 ```
 
 _Example_ :   `./target/debug/blueprint-hexagonal-infra run ls /`

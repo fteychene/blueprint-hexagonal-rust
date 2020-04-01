@@ -1,6 +1,8 @@
 extern crate blueprint_hexagonal_domain as domain;
-#[macro_use] extern crate diesel;
-#[macro_use] extern crate diesel_migrations;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
 
 use std::borrow::Borrow;
 
@@ -14,7 +16,7 @@ use domain::executor::service::task_execution::TaskScheduler;
 use crate::primary::cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
 use crate::secondary::adapter::execution::LocalExecutionAdapter;
 use crate::secondary::adapter::id_generator::UUIDGeneratorAdapter;
-use crate::secondary::adapter::storage::{new_storage_adapter};
+use crate::secondary::adapter::storage::new_storage_adapter;
 
 
 mod secondary;
@@ -36,16 +38,28 @@ fn main() -> Result<(), Error> {
 
 fn run(mut port: impl TaskSchedulerPort) -> Result<(), Error> {
     match parse_cli_opts() {
-        CliOpt::Run(task_run_input) => port.schedule_task::<TaskRunOpt>(task_run_input)
-            .map(|result| match result {
-                TaskId::Id(id) => println!("Task with id {} scheduled", id),
-                TaskId::Name(name) => println!("Task with name {} scheduled", name),
-            }),
+        CliOpt::Run(ref task_run_input) => port.schedule_task::<TaskRunOpt>(task_run_input.clone())
+            .map(|result|
+                if task_run_input.wait {
+                    if let Err(err) = port.task_status(result).map(display_task_status) {
+                        eprintln!("Error waiting status of task : {:?}", err)
+                    };
+                } else {
+                    match result {
+                        TaskId::Id(id) => println!("Task with id {} scheduled", id),
+                        TaskId::Name(name) => println!("Task with name {} scheduled", name),
+                    }
+                }
+            ),
         CliOpt::Status(task_status_input) => port.task_status::<TaskStatusOpt>(task_status_input)
-            .map(|result| match result {
-                TaskStatus::Success(stdout) => println!("Task was successfully run :\n {}", stdout.lines().into_iter().map(|line| format!("\t{}", line)).join("\n")),
-                TaskStatus::Scheduled => println!("Task is scheduled"),
-                TaskStatus::Error(stderr) => eprintln!("Task was in error  :\n {}", stderr.lines().map(|line| format!("\t{}", line)).join("\n"))
-            })
+            .map(display_task_status)
+    }
+}
+
+fn display_task_status(status: TaskStatus) {
+    match status {
+        TaskStatus::Success(stdout) => println!("Task was successfully run :\n {}", stdout.lines().into_iter().map(|line| format!("\t{}", line)).join("\n")),
+        TaskStatus::Scheduled => println!("Task is scheduled"),
+        TaskStatus::Error(stderr) => eprintln!("Task was in error  :\n {}", stderr.lines().map(|line| format!("\t{}", line)).join("\n"))
     }
 }
