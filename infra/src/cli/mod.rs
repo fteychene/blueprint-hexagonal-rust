@@ -1,28 +1,58 @@
-use anyhow::Error;
 use domain::executor::ports::primary::TaskInput;
+use domain::executor::model::model::TaskId;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "tasc")]
-pub struct TaskCliInput {
+pub struct TaskRunOpt {
     /// Command to be executed by the task
-    #[structopt()]
+    #[structopt(required = true)]
     command: Vec<String>,
     /// Optional : Name of the task for later querying
     #[structopt(short, long)]
     name: Option<String>,
 }
 
-pub fn parse_cli_opts() -> Result<TaskCliInput, Error> {
-    Ok(TaskCliInput::from_args())
+#[derive(Debug, StructOpt)]
+pub enum TaskStatusOpt {
+    Id {
+        #[structopt(required = true)]
+        id: String
+    },
+    Name {
+        #[structopt(required = true)]
+        name: String
+    },
 }
 
-impl Into<TaskInput> for TaskCliInput {
+#[derive(Debug, StructOpt)]
+#[structopt(name = "tasc")]
+pub enum CliOpt {
+    #[structopt(name = "run")]
+    Run(TaskRunOpt),
+    #[structopt(name = "status")]
+    Status(TaskStatusOpt),
+}
+
+
+pub fn parse_cli_opts() -> CliOpt {
+    CliOpt::from_args()
+}
+
+impl Into<TaskInput> for TaskRunOpt {
     fn into(self) -> TaskInput {
         TaskInput {
             command: self.command.join(" "),
             name: self.name,
             env: None,
+        }
+    }
+}
+
+impl Into<TaskId> for TaskStatusOpt {
+    fn into(self) -> TaskId {
+        match self {
+            TaskStatusOpt::Id { id } => TaskId::Id(id),
+            TaskStatusOpt::Name { name } => TaskId::Name(name)
         }
     }
 }

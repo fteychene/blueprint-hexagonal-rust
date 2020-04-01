@@ -9,10 +9,12 @@ use adapter::secondary::execution::TaskExecutionAdapter;
 use adapter::secondary::id_generator::IdGeneratorAdapter;
 use domain::executor::ports::primary::TaskSchedulerPort;
 use domain::executor::service::task_execution::TaskScheduler;
+use domain::executor::model::model::{TaskId, TaskStatus};
 use anyhow::Error;
 use std::borrow::{BorrowMut, Borrow};
-use cli::parse_cli_opts;
+use cli::{parse_cli_opts, CliOpt, TaskRunOpt, TaskStatusOpt};
 use std::env;
+use itertools::Itertools;
 
 fn main() -> Result<(), Error> {
     //TODO Load configuration in a proper way
@@ -30,9 +32,17 @@ fn main() -> Result<(), Error> {
 }
 
 fn run(mut port: impl TaskSchedulerPort) -> Result<(), Error> {
-    parse_cli_opts()
-        .and_then(|input| port.schedule_task(input))
-        .and_then(|task_id| port.task_status(task_id))
-        .map(|status| println!("Task status is {:?}", status))
-        .map(|_| ())
+    match parse_cli_opts() {
+        CliOpt::Run(task_run_input) => port.schedule_task::<TaskRunOpt>(task_run_input)
+            .map(|result| match result {
+                TaskId::Id(id) => println!("Task with id {} scheduled", id),
+                TaskId::Name(name) => println!("Task with name {} scheduled", name),
+            }),
+        CliOpt::Status(task_status_input) => port.task_status::<TaskStatusOpt>(task_status_input)
+            .map(|result| match result {
+                TaskStatus::Success(stdout) => println!("Task was successfully run :\n {}", stdout.lines().into_iter().map(|line| format!("\t{}", line)).join("\n")),
+                TaskStatus::Scheduled => println!("Task is scheduled"),
+                TaskStatus::Error(stderr) => eprintln!("Task was in error  :\n {}", stderr.lines().map(|line| format!("\t{}", line)).join("\n"))
+            })
+    }
 }

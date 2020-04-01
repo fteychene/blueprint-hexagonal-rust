@@ -58,26 +58,18 @@ Use cargo for build : `cargo build`
 
 ### Execute
 
-_Run from `cargo` :_  
-```
- cargo run -- --name test ls /home
- # compilation logs ...
-    Finished dev [unoptimized + debuginfo] target(s) in 0.05s
-     Running `target/debug/blueprint-hexagonal-infra --name test ls /home`
-Task status is Success("fteychene\nlinuxbrew\n")
-```
+_Run from `cargo` :_ `cargo run -- <args>`
 
-_Command line execution :_
+_Command line execution :_ ` ./target/debug/blueprint-hexagonal-infra <args>`
+
+### Usage
+
+__Run a task__ :
 ```
- ./target/debug/blueprint-hexagonal-infra --help
-tasc 0.1.0
+blueprint-hexagonal-infra-run 0.1.0
 
 USAGE:
-    blueprint-hexagonal-infra [OPTIONS] [command]...
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    blueprint-hexagonal-infra run [OPTIONS] <command>...
 
 OPTIONS:
     -n, --name <name>    Optional : Name of the task for later querying
@@ -85,6 +77,17 @@ OPTIONS:
 ARGS:
     <command>...    Command to be executed by the task
 ```
+
+_Example_ :   `./target/debug/blueprint-hexagonal-infra run ls /`
+
+__Status of a task__ :
+```
+USAGE:
+    blueprint-hexagonal-infra status id <id>
+    blueprint-hexagonal-infra status name <name>
+```
+
+_Example_ :   `./target/debug/blueprint-hexagonal-infra status id f340a3d3-f5ca-42b1-9a3b-312112836cd8`
 
 ### Database connection
 
