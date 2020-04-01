@@ -6,6 +6,8 @@ use domain::executor::ports::secondary::TaskStoragePort;
 mod schema;
 mod commands;
 
+embed_migrations!("../migrations");
+
 pub struct SqliteStorageAdapter {
     connection: SqliteConnection
 }
@@ -32,6 +34,7 @@ impl TaskStoragePort for SqliteStorageAdapter {
 impl SqliteStorageAdapter {
     pub fn new(database_url: &str) -> Result<SqliteStorageAdapter, Error> {
         let database_connection = commands::establish_connection(database_url)?;
+        embedded_migrations::run_with_output(&database_connection, &mut std::io::stdout())?;
         Ok(SqliteStorageAdapter {
             connection: database_connection
         })

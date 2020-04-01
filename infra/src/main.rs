@@ -1,21 +1,23 @@
 extern crate blueprint_hexagonal_domain as domain;
 #[macro_use] extern crate diesel;
+#[macro_use] extern crate diesel_migrations;
+
+use std::borrow::Borrow;
+use std::env;
+
+use anyhow::Error;
+use itertools::Itertools;
+
+use adapter::secondary::execution::LocalExecutionAdapter;
+use adapter::secondary::id_generator::UUIDGeneratorAdapter;
+use adapter::secondary::storage::{new_storage_adapter, StorageType};
+use cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
+use domain::executor::model::model::{TaskId, TaskStatus};
+use domain::executor::ports::primary::TaskSchedulerPort;
+use domain::executor::service::task_execution::TaskScheduler;
 
 mod adapter;
 mod cli;
-
-use adapter::secondary::storage::{new_storage_adapter, StorageType};
-use adapter::secondary::storage::database::SqliteStorageAdapter;
-use adapter::secondary::execution::LocalExecutionAdapter;
-use adapter::secondary::id_generator::UUIDGeneratorAdapter;
-use domain::executor::ports::primary::TaskSchedulerPort;
-use domain::executor::service::task_execution::TaskScheduler;
-use domain::executor::model::model::{TaskId, TaskStatus};
-use anyhow::Error;
-use std::borrow::{BorrowMut, Borrow};
-use cli::{parse_cli_opts, CliOpt, TaskRunOpt, TaskStatusOpt};
-use std::env;
-use itertools::Itertools;
 
 fn main() -> Result<(), Error> {
     //TODO Load configuration in a proper way
@@ -25,7 +27,7 @@ fn main() -> Result<(), Error> {
     let execution = LocalExecutionAdapter::new();
     let id_generator = UUIDGeneratorAdapter::new();
     let service = TaskScheduler::new(
-        storage.borrow_mut(),
+        storage.as_mut(),
         execution.borrow(),
         id_generator.borrow(),
     );

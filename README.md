@@ -100,7 +100,6 @@ Enter ".help" for usage hints.
 sqlite> select * from tasks;
 1477bb1b-73b2-468e-a4e2-fc571423da25||ls /home||SUCCESS|fteychene
 linuxbrew
-
 ```
 
 ## TODO

@@ -12,5 +12,6 @@ im = "14.3"
 anyhow = "1.0"
 uuid = {version = "0.8", features = ["v4"] }
 diesel = { version = "1.4", features = ["sqlite", "r2d2"] }
+diesel_migrations = "1.4"
 structopt = "0.3"
 itertools = "0.9"
