@@ -119,10 +119,12 @@ linuxbrew
  - [x] Add real life secondary.adapter
  - [x] CLI Adapter for input
  - [x] Improve error management
- - [ ] Add input validation
  - [x] Improve documentation
- - [ ] Split task execution
  - [x] Run migration through code for database
+ - [ ] Add input validation
+ - [ ] Split task execution
+ - [ ] Split code to client and server
+ - [ ] Make connection through unix socket from cli to server
  
 ## Limitations
 
