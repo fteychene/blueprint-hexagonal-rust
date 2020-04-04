@@ -24,7 +24,6 @@ pub fn load_settings() -> Result<Configuration, Error> {
         .merge(config::Environment::default().separator("_"))?;
 
     Configuration::try_from(settings)
-    // settings.try_into().map_err(|err| anyhow!("Error loading settings {:?}", err))
 }
 
 impl TryFrom<Config> for Configuration {

@@ -126,7 +126,9 @@ linuxbrew
  
 ## Limitations
 
-### Into for secondary ports
+### Into for secondary ports 
+
+[Concerned code part](domain/src/executor/ports/secondary.rs#L11)
 
 __Goal__ :
 Main goal was to provide a way for adapters to not adapt their internal domains to application domain as function result.  
