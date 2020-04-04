@@ -1,6 +1,6 @@
 use super::schema::tasks;
 use diesel::{SqliteConnection, Connection, RunQueryDsl};
-use anyhow::{anyhow, Error};
+use anyhow::{anyhow, Error, Context};
 use domain::executor::model::model::{Task, TaskId, TaskStatus};
 use std::convert::TryInto;
 use crate::diesel::*;
@@ -24,7 +24,7 @@ struct DbTask {
 
 pub fn establish_connection(database_url: &str) -> Result<SqliteConnection, Error> {
     SqliteConnection::establish(database_url)
-        .map_err(|err| anyhow!("Error connecting to database {}", err))
+        .context("Error connecting to database")
 }
 
 pub fn create_task(conn: &SqliteConnection, new_task: &Task) -> Result<usize, Error> {
@@ -32,7 +32,7 @@ pub fn create_task(conn: &SqliteConnection, new_task: &Task) -> Result<usize, Er
     diesel::insert_into(tasks::table)
         .values(&insertable_task)
         .execute(conn)
-        .map_err(|err| anyhow!("Error inserting in db : {:?}", err))
+        .context(format!("Error inserting in db task {:?}", new_task))
 }
 
 pub fn get_task(conn: &SqliteConnection, task_id: &TaskId) -> Result<TaskStatus, Error> {
@@ -41,11 +41,11 @@ pub fn get_task(conn: &SqliteConnection, task_id: &TaskId) -> Result<TaskStatus,
         TaskId::Id(id_value) => tasks.filter(id.eq(id_value))
             .limit(1)
             .first::<DbTask>(conn)
-            .map_err(|err| anyhow!("Error loading from database : {:?}", err))?.try_into(),
+            .context(format!("Error loading from database id {}", id_value))?.try_into(),
         TaskId::Name(name_value) => tasks.filter(name.nullable().eq(name_value))
             .limit(1)
             .first::<DbTask>(conn)
-            .map_err(|err| anyhow!("Error loading from database : {:?}", err))?.try_into()
+            .context(format!("Error loading from database name {}", name_value))?.try_into()
     }?;
     return Ok(status_value);
 }
@@ -63,7 +63,7 @@ pub fn update_task(conn: &SqliteConnection, id_value: &str, status: &str, status
         .set(&TaskStatusUpdate { status, status_log })
         .execute(conn)
         .map(|_| ())
-        .map_err(|err| anyhow!("Error loading from database : {:?}", err))
+        .context(format!("Error update in database for task id {}", id_value))
 }
 
 impl From<(&Task, &TaskStatus)> for DbTask {

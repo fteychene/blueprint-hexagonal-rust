@@ -1,7 +1,7 @@
 use crate::executor::ports::secondary::{TaskStoragePort, TaskExecutionPort, IdGeneratorPort};
 use crate::executor::ports::primary::{TaskSchedulerPort, TaskInput};
 use crate::executor::model::model::{Task, TaskId, TaskStatus};
-use anyhow::{anyhow, Error};
+use anyhow::{Error, Context};
 
 pub struct TaskScheduler<'a> {
     storage: &'a mut dyn TaskStoragePort,
@@ -12,14 +12,14 @@ pub struct TaskScheduler<'a> {
 impl TaskSchedulerPort for TaskScheduler<'_> {
     fn schedule_task<T>(&mut self, input_task: T) -> Result<TaskId, Error>
         where T: Into<TaskInput> {
-        self.storage.save(task(input_task.into(), self.id_generator.generate_id()))
+        self.storage.save(task(input_task.into(), self.id_generator.generate_id())).context("Error storing task during schedule")
             // No rule logic for the moment, execute after
-            .and_then(|into_task| execute_task(into_task.into(), self.execution, self.storage))
+            .and_then(|into_task| execute_task(into_task.into(), self.execution, self.storage)).context("Error during task execution")
     }
 
     fn task_status<T>(&mut self, id: T) -> Result<TaskStatus, Error>
         where T: Into<TaskId> {
-        self.storage.status(id.into())
+        self.storage.status(id.into()).context("Error on task status")
     }
 }
 
@@ -46,12 +46,9 @@ fn task(input: TaskInput, id: String) -> Task {
 fn execute_task(task: Task, executor: &dyn TaskExecutionPort, storage: &mut dyn TaskStoragePort) -> Result<TaskId, Error> {
     executor.execute(&task)
         .map_err(|error| {
-            match storage.complete(&task, TaskStatus::Error(format!("{:?}", error))) {
-                Ok(_) => anyhow!("Error during task {} execution", task.id),
-                Err(err) => {
-                    eprintln!("Error saving error status for task {} : {}", task.id, err);
-                    anyhow!("Error executing task {} and during status save execution", task.id)
-                }
+            match storage.complete(&task, TaskStatus::Error(error.to_string())) {
+                Ok(_) => error.context(format!("Error during task {} execution", task.id)),
+                Err(err) => err.context(format!("Error executing task {} and during status save execution", task.id))
             }
         })
         .and_then(|result| storage.complete(&task, result))

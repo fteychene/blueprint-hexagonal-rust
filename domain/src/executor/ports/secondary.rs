@@ -1,7 +1,6 @@
 use anyhow::Error;
 use mockall::*;
 
-use crate::executor::model::error::TaskError;
 use crate::executor::model::model::{Task, TaskId, TaskStatus};
 
 #[automock]
@@ -16,7 +15,7 @@ pub trait TaskStoragePort {
 
 #[automock]
 pub trait TaskExecutionPort {
-    fn execute(&self, task: &Task) -> Result<TaskStatus, TaskError>;
+    fn execute(&self, task: &Task) -> Result<TaskStatus, Error>;
 }
 
 #[automock]

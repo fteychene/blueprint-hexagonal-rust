@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Error};
+use anyhow::{anyhow, Error, Context};
 
 use config::Config;
 use std::convert::TryFrom;
@@ -32,7 +32,7 @@ impl TryFrom<Config> for Configuration {
     fn try_from(value: Config) -> Result<Self, Self::Error> {
         StorageConfiguration::try_from(value)
             .map(|storage| Configuration { storage })
-            .map_err(|err| anyhow!("Error loading settings {:?}", err))
+            .context("Error loading settings")
     }
 }
 

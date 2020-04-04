@@ -6,11 +6,19 @@ pub enum TaskError {
     CommandError(String),
     #[error("Error executing the command")]
     ExecutionError {
-        #[from]
         source: anyhow::Error
     },
     #[error("Unexpected error while processing the command")]
     UnexpectedError {
-        source: anyhow::Error
+        source: Box<dyn std::error::Error>
     }
+}
+
+
+unsafe impl Sync for TaskError {
+
+}
+
+unsafe impl Send for TaskError {
+
 }

@@ -118,11 +118,11 @@ linuxbrew
  - [x] Add unit tests
  - [x] Add real life secondary.adapter
  - [x] CLI Adapter for input
- - [ ] Improve error management
+ - [x] Improve error management
  - [ ] Add input validation
  - [x] Improve documentation
  - [ ] Split task execution
- - [ ] Run migration through code for database
+ - [x] Run migration through code for database
  
 ## Limitations
 

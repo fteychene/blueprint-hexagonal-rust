@@ -1,10 +1,10 @@
-use anyhow::Error;
+use anyhow::{anyhow, Error, Context};
 use im::HashMap;
 use im::Vector;
 
 use domain::executor::model::model::{Task, TaskId, TaskStatus};
 use domain::executor::ports::secondary::TaskStoragePort;
-use anyhow::anyhow;
+
 
 #[derive(Clone)]
 struct StoredTask {
@@ -26,21 +26,21 @@ impl TaskStoragePort for InMemoryStorageAdapter {
     }
 
     fn status(&mut self, id: TaskId) -> Result<TaskStatus, Error> {
-        self.tasks.iter()
-            .find(|stored_task| *stored_task == id)
+        let kept_id = id.clone();
+        self.find_only_one(id).context(format!("Error searching for id {:?}", kept_id))
             .map(|stored_task| stored_task.status.clone())
-            .ok_or_else(|| anyhow!("Can't find task"))
     }
 
+
     fn complete(&mut self, task: &Task, status: TaskStatus) -> Result<(), Error> {
+        let id = task.id.clone();
         self.tasks.iter().position(|stored_task| stored_task == TaskId::from(task))
             .map(|index| {
                 let mut stored_task = StoredTask::from(task);
                 stored_task.status = status;
                 self.tasks.set(index, stored_task);
                 ()
-            })
-            .ok_or_else(|| anyhow!("Can't find task"))
+            }).context(format!("Error completing task {:?}", id))
     }
 }
 
@@ -49,6 +49,17 @@ impl InMemoryStorageAdapter {
         InMemoryStorageAdapter {
             tasks: Vector::new()
         }
+    }
+
+    fn find_only_one(&mut self, id: TaskId) -> Result<&StoredTask, Error> {
+        let result: Vec<&StoredTask> = self.tasks.iter()
+            .filter(|stored_task| *stored_task == id).collect();
+        match result.as_slice() {
+            [value] => Ok(value),
+            [] =>  Err(anyhow!("No task correspond to your selection")),
+            _ =>  Err(anyhow!("More than 1 task correspond to your selection"))
+        }
+
     }
 }
 
