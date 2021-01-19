@@ -8,6 +8,7 @@ use std::borrow::Borrow;
 
 use anyhow::Error;
 use itertools::Itertools;
+use itertools::Chunks;
 
 use domain::executor::model::model::{TaskId, TaskStatus};
 use domain::executor::ports::primary::TaskSchedulerPort;
@@ -17,6 +18,7 @@ use crate::primary::cli::{CliOpt, parse_cli_opts, TaskRunOpt, TaskStatusOpt};
 use crate::secondary::adapter::execution::LocalExecutionAdapter;
 use crate::secondary::adapter::id_generator::UUIDGeneratorAdapter;
 use crate::secondary::adapter::storage::new_storage_adapter;
+use diesel::IntoSql;
 
 
 mod secondary;

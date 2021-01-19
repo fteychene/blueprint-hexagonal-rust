@@ -14,6 +14,6 @@ uuid = {version = "0.8", features = ["v4"] }
 diesel = { version = "1.4", features = ["sqlite", "r2d2"] }
 diesel_migrations = "1.4"
 structopt = "0.3"
-itertools = "0.9"
+itertools = "0.10"
 config = "0.10"
 serde = "1.0"
